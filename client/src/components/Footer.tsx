@@ -12,7 +12,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold mb-4">Produtos</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/produtos/gestao-empresarial" className="opacity-75 hover:opacity-100">Gestão Empresarial</Link></li>
+              <li><Link href="/produtos/ecommerce" className="opacity-75 hover:opacity-100">E-Commerce</Link></li>
               <li><Link href="/produtos/sistema-leads" className="opacity-75 hover:opacity-100">Sistema de Leads</Link></li>
               <li><Link href="/produtos/gestao-escolar" className="opacity-75 hover:opacity-100">Gestão Escolar</Link></li>
             </ul>

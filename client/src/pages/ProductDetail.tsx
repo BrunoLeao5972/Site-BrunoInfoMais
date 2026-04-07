@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Image as ImageIcon, X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 import { Link, useParams } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FloatingContactButtons from "@/components/FloatingContactButtons";
+import { useState } from "react";
 
 const productDetails: Record<string, {
   title: string;
@@ -14,28 +15,28 @@ const productDetails: Record<string, {
   benefits: string[];
   targetAudience: string;
 }> = {
-  "gestao-empresarial": {
-    title: "Gestão Empresarial",
-    description: "Sistema completo para controle de vendas, estoque, financeiro e processos empresariais",
-    fullDescription: "O sistema de Gestão Empresarial foi desenvolvido para empresas que buscam centralizar todas as operações em uma única plataforma. Com funcionalidades avançadas de controle, relatórios e automação, você terá total visibilidade sobre seu negócio.",
+  "ecommerce": {
+    title: "E-Commerce",
+    description: "Sistema de loja online com carrinho de compras, gestão de produtos e pagamentos",
+    fullDescription: "A plataforma de E-Commerce foi desenvolvida para empreendedores que desejam criar e gerenciar uma loja online profissional. Com funcionalidades robustas de catálogo, carrinho de compras, pagamentos seguros e gestão de pedidos, você consegue vender online com confiança.",
     features: [
-      "Controle de Vendas em Tempo Real",
-      "Gestão Completa de Estoque",
-      "Módulo Financeiro Integrado",
-      "Relatórios Gerenciais Avançados",
-      "Integração com Múltiplos Canais de Venda",
-      "Backup Automático e Segurança de Dados",
-      "Acesso via Web e Mobile",
+      "Catálogo de Produtos Ilimitado",
+      "Carrinho de Compras Inteligente",
+      "Integração com Múltiplos Gateways de Pagamento",
+      "Gestão Automática de Pedidos",
+      "Controle de Estoque em Tempo Real",
+      "Suporte a Cupons e Promoções",
+      "SEO Otimizado para Buscadores",
       "Suporte Técnico 24/7",
     ],
     benefits: [
-      "Aumento de 40% na produtividade",
-      "Redução de 60% em erros operacionais",
-      "Melhor controle financeiro",
-      "Decisões baseadas em dados",
-      "Escalabilidade conforme o crescimento",
+      "Aumento de 200% em vendas online",
+      "Redução de 80% em tempo de gerenciamento",
+      "Maior alcance de clientes",
+      "Pagamentos seguros e confiáveis",
+      "Escalabilidade para crescimento",
     ],
-    targetAudience: "Pequenas e médias empresas de varejo, comércio e serviços",
+    targetAudience: "Empreendedores, pequenas e médias lojas que desejam vender online",
   },
   "sistema-leads": {
     title: "Sistema de Leads",
@@ -159,6 +160,56 @@ export default function ProductDetail() {
   const productId = params.id as string;
   const product = productDetails[productId];
 
+  // Estados do lightbox/galeria
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(1);
+
+  // Array de imagens do KDS
+  const kdsImages = [
+    { src: "/images/kds/kds-admin.png", alt: "Painel Administrativo - Gerenciamento de pedidos" },
+    { src: "/images/kds/kds-cozinha.png", alt: "Tela da Cozinha - Acompanhamento em tempo real" },
+    { src: "/images/kds/kds-painel.png", alt: "Painel de Acompanhamento - Display para clientes" },
+    { src: "/images/kds/kds-relatorios.png", alt: "Relatórios - Eficiência operacional" },
+  ];
+
+  // Abrir lightbox
+  const openLightbox = (index: number) => {
+    setCurrentImageIndex(index);
+    setZoomLevel(1);
+    setLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Fechar lightbox
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    setZoomLevel(1);
+    document.body.style.overflow = 'auto';
+  };
+
+  // Próxima imagem
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % kdsImages.length);
+    setZoomLevel(1);
+  };
+
+  // Imagem anterior
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + kdsImages.length) % kdsImages.length);
+    setZoomLevel(1);
+  };
+
+  // Zoom in
+  const zoomIn = () => {
+    setZoomLevel((prev) => Math.min(prev + 0.5, 3));
+  };
+
+  // Zoom out
+  const zoomOut = () => {
+    setZoomLevel((prev) => Math.max(prev - 0.5, 1));
+  };
+
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -191,24 +242,67 @@ export default function ProductDetail() {
         </div>
       </section>
 
-      {/* Product Screenshots Placeholder */}
+      {/* Product Screenshots */}
       <section className="py-20 bg-muted/50">
         <div className="container">
           <h2 className="text-2xl font-bold mb-8">Visualize o Produto</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {[1, 2].map((i) => (
-              <div
-                key={i}
-                className="bg-background border-2 border-dashed border-border rounded-lg aspect-video flex items-center justify-center"
-              >
-                <div className="text-center">
-                  <ImageIcon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">Screenshot {i}</p>
-                  <p className="text-sm text-muted-foreground mt-2">Espaço reservado para imagem do produto</p>
-                </div>
+          
+          {productId === "kds" ? (
+            /* Screenshots do KDS */
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-background border border-border rounded-lg overflow-hidden shadow-lg">
+                <img 
+                  src="/images/kds/kds-admin.png" 
+                  alt="Painel Administrativo - Gerenciamento de pedidos"
+                  className="w-full aspect-video object-cover"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
               </div>
-            ))}
-          </div>
+              
+              <div className="bg-background border border-border rounded-lg overflow-hidden shadow-lg">
+                <img 
+                  src="/images/kds/kds-cozinha.png" 
+                  alt="Tela da Cozinha - Acompanhamento em tempo real"
+                  className="w-full aspect-video object-cover"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              </div>
+              
+              <div className="bg-background border border-border rounded-lg overflow-hidden shadow-lg">
+                <img 
+                  src="/images/kds/kds-painel.png" 
+                  alt="Painel de Acompanhamento - Display para clientes"
+                  className="w-full aspect-video object-cover"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              </div>
+              
+              <div className="bg-background border border-border rounded-lg overflow-hidden shadow-lg">
+                <img 
+                  src="/images/kds/kds-relatorios.png" 
+                  alt="Relatórios - Eficiência operacional"
+                  className="w-full aspect-video object-cover"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              </div>
+            </div>
+          ) : (
+            /* Placeholder para outros produtos */
+            <div className="grid md:grid-cols-2 gap-6">
+              {[1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="bg-background border-2 border-dashed border-border rounded-lg aspect-video flex items-center justify-center"
+                >
+                  <div className="text-center">
+                    <ImageIcon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Screenshot {i}</p>
+                    <p className="text-sm text-muted-foreground mt-2">Espaço reservado para imagem do produto</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

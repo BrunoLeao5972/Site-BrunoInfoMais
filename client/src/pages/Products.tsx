@@ -8,10 +8,10 @@ import FloatingContactButtons from "@/components/FloatingContactButtons";
 
 const products = [
   {
-    id: "gestao-empresarial",
-    title: "Gestão Empresarial",
-    description: "Sistema completo para controle de vendas, estoque, financeiro e processos empresariais",
-    features: ["Controle de Vendas", "Gestão de Estoque", "Financeiro", "Relatórios Gerenciais"],
+    id: "ecommerce",
+    title: "E-Commerce",
+    description: "Plataforma completa para criar e gerenciar sua loja online com segurança e facilidade",
+    features: ["Catálogo de Produtos", "Carrinho de Compras", "Gestão de Pedidos", "Integração de Pagamentos"],
     icon: Code2,
   },
   {

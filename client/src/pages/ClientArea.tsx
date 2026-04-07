@@ -125,7 +125,7 @@ export default function ClientArea() {
         name: documentType === "cpf" ? "João Silva" : "Empresa ABC Ltda",
         document: document,
         license: {
-          product: "Gestão Empresarial",
+          product: "E-Commerce",
           expirationDate: "2026-12-31",
           status: "active",
           maxUsers: 5
