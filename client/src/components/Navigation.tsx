@@ -14,6 +14,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
     { href: "/", label: "Início" },
     { href: "/sobre", label: "Sobre" },
     { href: "/produtos", label: "Produtos" },
+    { href: "/cliente", label: "Área do Cliente" },
   ];
 
   return (

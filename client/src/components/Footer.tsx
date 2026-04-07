@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-secondary-foreground/20 pt-8 text-center text-sm opacity-75">
-          <p>&copy; 2024 BrunoInfoMais. Todos os direitos reservados.</p>
+          <p>&copy; 2026 BrunoInfoMais. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
