@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, Image as ImageIcon, X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ArrowLeft, CheckCircle2, Image as ImageIcon, ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { Link, useParams } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -160,54 +161,42 @@ export default function ProductDetail() {
   const productId = params.id as string;
   const product = productDetails[productId];
 
-  // Estados do lightbox/galeria
+  // Estado da galeria de imagens
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(1);
+  const [zoomed, setZoomed] = useState(false);
 
-  // Array de imagens do KDS
+  // Imagens do KDS
   const kdsImages = [
-    { src: "/images/kds/kds-admin.png", alt: "Painel Administrativo - Gerenciamento de pedidos" },
-    { src: "/images/kds/kds-cozinha.png", alt: "Tela da Cozinha - Acompanhamento em tempo real" },
-    { src: "/images/kds/kds-painel.png", alt: "Painel de Acompanhamento - Display para clientes" },
-    { src: "/images/kds/kds-relatorios.png", alt: "Relatórios - Eficiência operacional" },
+    { src: "/images/kds/kds-admin.png", alt: "Painel Administrativo - Gerenciamento de pedidos", title: "Painel Administrativo" },
+    { src: "/images/kds/kds-cozinha.png", alt: "Tela da Cozinha - Acompanhamento em tempo real", title: "Tela da Cozinha" },
+    { src: "/images/kds/kds-painel.png", alt: "Painel de Acompanhamento - Display para clientes", title: "Painel de Acompanhamento" },
+    { src: "/images/kds/kds-relatorios.png", alt: "Relatórios - Eficiência operacional", title: "Relatórios e Estatísticas" },
   ];
 
-  // Abrir lightbox
   const openLightbox = (index: number) => {
     setCurrentImageIndex(index);
-    setZoomLevel(1);
     setLightboxOpen(true);
-    document.body.style.overflow = 'hidden';
+    setZoomed(false);
   };
 
-  // Fechar lightbox
   const closeLightbox = () => {
     setLightboxOpen(false);
-    setZoomLevel(1);
-    document.body.style.overflow = 'auto';
+    setZoomed(false);
   };
 
-  // Próxima imagem
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % kdsImages.length);
-    setZoomLevel(1);
+    setZoomed(false);
   };
 
-  // Imagem anterior
   const prevImage = () => {
     setCurrentImageIndex((prev) => (prev - 1 + kdsImages.length) % kdsImages.length);
-    setZoomLevel(1);
+    setZoomed(false);
   };
 
-  // Zoom in
-  const zoomIn = () => {
-    setZoomLevel((prev) => Math.min(prev + 0.5, 3));
-  };
-
-  // Zoom out
-  const zoomOut = () => {
-    setZoomLevel((prev) => Math.max(prev - 0.5, 1));
+  const toggleZoom = () => {
+    setZoomed((prev) => !prev);
   };
 
   if (!product) {
@@ -248,43 +237,28 @@ export default function ProductDetail() {
           <h2 className="text-2xl font-bold mb-8">Visualize o Produto</h2>
           
           {productId === "kds" ? (
-            /* Screenshots do KDS */
+            /* Screenshots do KDS - Galeria clicável */
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-background border border-border rounded-lg overflow-hidden shadow-lg">
-                <img 
-                  src="/images/kds/kds-admin.png" 
-                  alt="Painel Administrativo - Gerenciamento de pedidos"
-                  className="w-full aspect-video object-cover"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-              </div>
-              
-              <div className="bg-background border border-border rounded-lg overflow-hidden shadow-lg">
-                <img 
-                  src="/images/kds/kds-cozinha.png" 
-                  alt="Tela da Cozinha - Acompanhamento em tempo real"
-                  className="w-full aspect-video object-cover"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-              </div>
-              
-              <div className="bg-background border border-border rounded-lg overflow-hidden shadow-lg">
-                <img 
-                  src="/images/kds/kds-painel.png" 
-                  alt="Painel de Acompanhamento - Display para clientes"
-                  className="w-full aspect-video object-cover"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-              </div>
-              
-              <div className="bg-background border border-border rounded-lg overflow-hidden shadow-lg">
-                <img 
-                  src="/images/kds/kds-relatorios.png" 
-                  alt="Relatórios - Eficiência operacional"
-                  className="w-full aspect-video object-cover"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-              </div>
+              {kdsImages.map((image, index) => (
+                <div 
+                  key={index}
+                  className="bg-background border border-border rounded-lg overflow-hidden shadow-lg cursor-pointer group relative"
+                  onClick={() => openLightbox(index)}
+                >
+                  <img 
+                    src={image.src}
+                    alt={image.alt}
+                    className="w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <p className="text-white font-medium text-sm">{image.title}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             /* Placeholder para outros produtos */
@@ -305,6 +279,103 @@ export default function ProductDetail() {
           )}
         </div>
       </section>
+
+      {/* Lightbox / Galeria Modal */}
+      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 bg-black/95 border-none">
+          <DialogTitle className="sr-only">
+            {kdsImages[currentImageIndex]?.title || "Visualização da imagem"}
+          </DialogTitle>
+          
+          {/* Header com título e botão fechar */}
+          <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent">
+            <div className="text-white">
+              <h3 className="font-semibold text-lg">{kdsImages[currentImageIndex]?.title}</h3>
+              <p className="text-white/70 text-sm">
+                {currentImageIndex + 1} / {kdsImages.length}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleZoom}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                title={zoomed ? "Reduzir" : "Ampliar"}
+              >
+                <ZoomIn className="w-5 h-5" />
+              </button>
+              <button
+                onClick={closeLightbox}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                title="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Imagem principal */}
+          <div className="relative w-full h-full flex items-center justify-center">
+            {/* Botão anterior */}
+            <button
+              onClick={prevImage}
+              className="absolute left-4 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              title="Imagem anterior"
+            >
+              <ChevronLeft className="w-8 h-8" />
+            </button>
+
+            {/* Imagem com zoom */}
+            <div 
+              className={`relative transition-transform duration-300 ${zoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'}`}
+              onClick={toggleZoom}
+            >
+              <img
+                src={kdsImages[currentImageIndex]?.src}
+                alt={kdsImages[currentImageIndex]?.alt}
+                className="max-w-full max-h-[80vh] object-contain"
+                onError={(e) => { 
+                  (e.target as HTMLImageElement).style.display = 'none'; 
+                }}
+              />
+            </div>
+
+            {/* Botão próximo */}
+            <button
+              onClick={nextImage}
+              className="absolute right-4 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              title="Próxima imagem"
+            >
+              <ChevronRight className="w-8 h-8" />
+            </button>
+          </div>
+
+          {/* Thumbnails de navegação */}
+          <div className="absolute bottom-0 left-0 right-0 z-50 p-4 bg-gradient-to-t from-black/80 to-transparent">
+            <div className="flex items-center justify-center gap-2">
+              {kdsImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setCurrentImageIndex(idx);
+                    setZoomed(false);
+                  }}
+                  className={`w-16 h-10 rounded overflow-hidden border-2 transition-all ${
+                    idx === currentImageIndex 
+                      ? 'border-white scale-110' 
+                      : 'border-transparent opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img
+                    src={img.src}
+                    alt={img.title}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Features */}
       <section className="py-20">

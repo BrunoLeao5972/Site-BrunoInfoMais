@@ -140,6 +140,24 @@
 }
 
 @layer components {
+  .hero-ambient-glow {
+    background:
+      radial-gradient(circle at 78% 42%, oklch(0.72 0.14 145 / 0.2) 0%, transparent 40%),
+      radial-gradient(circle at 62% 78%, oklch(0.78 0.11 150 / 0.15) 0%, transparent 48%);
+    animation: heroAmbientDrift 14s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  .hero-motion-overlay {
+    background:
+      linear-gradient(125deg, transparent 0%, transparent 36%, oklch(1 0 0 / 0.2) 46%, transparent 58%, transparent 100%),
+      radial-gradient(circle at 84% 24%, oklch(1 0 0 / 0.28) 0%, transparent 26%);
+    background-size: 180% 180%, 100% 100%;
+    animation: heroSweep 16s linear infinite;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
   .container {
     width: 100%;
     margin-left: auto;
@@ -166,5 +184,27 @@
       padding-right: 2rem;
       max-width: 1280px;
     }
+  }
+}
+
+@keyframes heroAmbientDrift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.65;
+  }
+
+  100% {
+    transform: translate3d(-1.5%, -2%, 0) scale(1.05);
+    opacity: 0.95;
+  }
+}
+
+@keyframes heroSweep {
+  0% {
+    background-position: 0% 50%, 84% 24%;
+  }
+
+  100% {
+    background-position: 100% 50%, 84% 24%;
   }
 }

@@ -74,16 +74,17 @@ export default function Home() {
           <img
             src="/images/hero-mentablet-bg.png"
             alt=""
-            className="h-full w-full object-cover object-[12%_center] md:object-[18%_center]"
+            className="h-full w-full object-cover object-[74%_center] md:object-[18%_center]"
             loading="eager"
             fetchPriority="high"
             decoding="async"
             aria-hidden
           />
           <div
-            className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent sm:via-background/55 lg:via-background/25 lg:w-[58%]"
+            className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/72 to-transparent sm:via-background/48 lg:via-background/25 lg:w-[58%]"
             aria-hidden
           />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/70 to-transparent md:hidden" aria-hidden />
         </div>
 
         <div className="container relative z-10 py-14 md:py-20 lg:py-24">
