@@ -12,7 +12,7 @@
       "dest": "/client/dist/$1"
     }
   ],
-  "buildCommand": "npm run build:client",
-  "outputDirectory": "dist/client",
+  "buildCommand": "cd client && pnpm build",
+  "outputDirectory": "client/dist",
   "framework": "vite"
 }
